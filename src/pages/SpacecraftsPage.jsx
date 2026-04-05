@@ -32,29 +32,35 @@ function SpacecraftsPage() {
     return <p>Loading...</p>;
   }
 
-  return (
-    <div>
-      <h2>Spacecrafts</h2>
+ return (
+  <div>
+    <h1>Spacecrafts</h1>
 
-      <ul>
-        {spacecrafts.map((spacecraft) => (
-          <li key={spacecraft.id}>
-            <button onClick={() => showDetails(spacecraft.id)}>
-              {spacecraft.name} - capacity: {spacecraft.capacity}
-            </button>
-          </li>
-        ))}
-      </ul>
+    <ul>
+      {spacecrafts.map((spacecraft) => (
+        <li key={spacecraft.id}>
+          {spacecraft.name} - capacity: {spacecraft.capacity}
 
-      {selectedSpacecraft && (
-        <div>
-          <h3>{selectedSpacecraft.name}</h3>
-          <p>Capacity: {selectedSpacecraft.capacity}</p>
-          <p>{selectedSpacecraft.description}</p>
-        </div>
-      )}
-    </div>
-  );
+          <button
+            onClick={async () => {
+              const response = await SpaceTravelApi.destroySpacecraft({
+                id: spacecraft.id
+              });
+
+              if (!response.isError) {
+                setSpacecrafts((prev) =>
+                  prev.filter((s) => s.id !== spacecraft.id)
+                );
+              }
+            }}
+          >
+            Destroy
+          </button>
+        </li>
+      ))}
+    </ul>
+  </div>
+ );
 }
 
 export default SpacecraftsPage;
