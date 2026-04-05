@@ -47,27 +47,42 @@ function PlanetsPage() {
   {spacecraft.name}
 
   <select
-    onChange={async (e) => {
-      const response = await SpaceTravelApi.sendSpacecraft({
+    defaultValue=""
+    onChange={async (event) => {
+      const targetPlanetId = Number(event.target.value);
+
+      if (!targetPlanetId && targetPlanetId !== 0) return;
+
+      const response = await SpaceTravelApi.sendSpacecraftToPlanet({
         spacecraftId: spacecraft.id,
-        planetId: Number(e.target.value)
+        targetPlanetId
       });
 
       if (!response.isError) {
-        const updatedSpacecrafts = await SpaceTravelApi.getSpacecrafts();
-        setSpacecrafts(updatedSpacecrafts.data);
+        const planetsResponse = await SpaceTravelApi.getPlanets();
+        const spacecraftsResponse = await SpaceTravelApi.getSpacecrafts();
+
+        if (!planetsResponse.isError) {
+          setPlanets(planetsResponse.data);
+        }
+
+        if (!spacecraftsResponse.isError) {
+          setSpacecrafts(spacecraftsResponse.data);
+        }
       }
     }}
   >
     <option value="">Move to...</option>
 
-    {planets.map((p) => (
-      <option key={p.id} value={p.id}>
-        {p.name}
-      </option>
-    ))}
+    {planets
+      .filter((p) => p.id !== planet.id)
+      .map((p) => (
+        <option key={p.id} value={p.id}>
+          {p.name}
+        </option>
+      ))}
   </select>
-              </li>
+</li>
               ))}
           </ul>
         </div>
