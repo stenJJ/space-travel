@@ -1,7 +1,7 @@
-import SpacecraftsPage from "./pages/SpacecraftsPage";
+import PlanetsPage from "./pages/PlanetsPage";
 
 function App() {
-  return <SpacecraftsPage />;
+  return <PlanetsPage />;
 }
 
 export default App;

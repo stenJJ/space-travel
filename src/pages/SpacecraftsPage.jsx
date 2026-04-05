@@ -28,39 +28,51 @@ function SpacecraftsPage() {
     }
   }
 
+  async function destroySpacecraft(id) {
+    const response = await SpaceTravelApi.destroySpacecraftById({ id });
+
+    if (!response.isError) {
+      setSpacecrafts((prevSpacecrafts) =>
+        prevSpacecrafts.filter((spacecraft) => spacecraft.id !== id)
+      );
+
+      if (selectedSpacecraft && selectedSpacecraft.id === id) {
+        setSelectedSpacecraft(null);
+      }
+    }
+  }
+
   if (loading) {
     return <p>Loading...</p>;
   }
 
- return (
-  <div>
-    <h1>Spacecrafts</h1>
+  return (
+    <div>
+      <h2>Spacecrafts</h2>
 
-    <ul>
-      {spacecrafts.map((spacecraft) => (
-        <li key={spacecraft.id}>
-          {spacecraft.name} - capacity: {spacecraft.capacity}
+      <ul>
+        {spacecrafts.map((spacecraft) => (
+          <li key={spacecraft.id}>
+            <button onClick={() => showDetails(spacecraft.id)}>
+              {spacecraft.name} - capacity: {spacecraft.capacity}
+            </button>
 
-          <button
-            onClick={async () => {
-              const response = await SpaceTravelApi.destroySpacecraft({
-                id: spacecraft.id
-              });
+            <button onClick={() => destroySpacecraft(spacecraft.id)}>
+              Destroy
+            </button>
+          </li>
+        ))}
+      </ul>
 
-              if (!response.isError) {
-                setSpacecrafts((prev) =>
-                  prev.filter((s) => s.id !== spacecraft.id)
-                );
-              }
-            }}
-          >
-            Destroy
-          </button>
-        </li>
-      ))}
-    </ul>
-  </div>
- );
+      {selectedSpacecraft && (
+        <div>
+          <h3>{selectedSpacecraft.name}</h3>
+          <p>Capacity: {selectedSpacecraft.capacity}</p>
+          <p>{selectedSpacecraft.description}</p>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default SpacecraftsPage;
