@@ -1,12 +1,7 @@
-import { Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
+import SpacecraftsPage from "./pages/SpacecraftsPage";
 
 function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-    </Routes>
-  );
+  return <SpacecraftsPage />;
 }
 
 export default App;
