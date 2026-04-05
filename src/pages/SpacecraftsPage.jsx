@@ -3,6 +3,7 @@ import SpaceTravelApi from "../services/SpaceTravelApi";
 
 function SpacecraftsPage() {
   const [spacecrafts, setSpacecrafts] = useState([]);
+  const [selectedSpacecraft, setSelectedSpacecraft] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -19,6 +20,14 @@ function SpacecraftsPage() {
     getSpacecrafts();
   }, []);
 
+  async function showDetails(id) {
+    const response = await SpaceTravelApi.getSpacecraftById({ id });
+
+    if (!response.isError) {
+      setSelectedSpacecraft(response.data);
+    }
+  }
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -30,10 +39,20 @@ function SpacecraftsPage() {
       <ul>
         {spacecrafts.map((spacecraft) => (
           <li key={spacecraft.id}>
-            {spacecraft.name} - capacity: {spacecraft.capacity}
+            <button onClick={() => showDetails(spacecraft.id)}>
+              {spacecraft.name} - capacity: {spacecraft.capacity}
+            </button>
           </li>
         ))}
       </ul>
+
+      {selectedSpacecraft && (
+        <div>
+          <h3>{selectedSpacecraft.name}</h3>
+          <p>Capacity: {selectedSpacecraft.capacity}</p>
+          <p>{selectedSpacecraft.description}</p>
+        </div>
+      )}
     </div>
   );
 }
